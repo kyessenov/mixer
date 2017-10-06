@@ -111,24 +111,6 @@ go_googleapis_repositories()
 
 go_istio_api_repositories(False)
 
-new_http_archive(
-    name = "docker_ubuntu",
-    build_file = "BUILD.ubuntu",
-    sha256 = "2c63dd81d714b825acd1cb3629c57d6ee733645479d0fcdf645203c2c35924c5",
-    type = "zip",
-    url = "https://codeload.github.com/tianon/docker-brew-ubuntu-core/zip/b6f1fe19228e5b6b7aed98dcba02f18088282f90",
-)
-
-DEBUG_BASE_IMAGE_SHA = "3f57ae2aceef79e4000fb07ec850bbf4bce811e6f81dc8cfd970e16cdf33e622"
-
-# See github.com/istio/manager/blob/master/docker/debug/build-and-publish-debug-image.sh
-# for instructions on how to re-build and publish this base image layer.
-http_file(
-    name = "ubuntu_xenial_debug",
-    sha256 = DEBUG_BASE_IMAGE_SHA,
-    url = "https://storage.googleapis.com/istio-build/manager/ubuntu_xenial_debug-" + DEBUG_BASE_IMAGE_SHA + ".tar.gz",
-)
-
 go_repository(
     name = "com_github_prometheus_client_golang",
     commit = "c5b7fccd204277076155f10851dad72b76a49317",  # Aug 17, 2016 (v0.8.0)
@@ -544,66 +526,6 @@ go_repository(
     name = "org_golang_x_sync",
     commit = "f52d1811a62927559de87708c8913c1650ce4f26",  # May 17, 2017 (no releases)
     importpath = "golang.org/x/sync",
-)
-
-##
-## Docker image build deps
-##
-
-git_repository(
-    name = "distroless",
-    commit = "3af69e6d50747bca265e9699fe7cc0c80f6ed1e3",  # Jun 27, 2017 (no releases)
-    remote = "https://github.com/GoogleCloudPlatform/distroless.git",
-)
-
-git_repository(
-    name = "runtimes_common",
-    commit = "3d73b4fecbd18de77588ab5eef712d50f34f601e",  # Jun 27, 2017 (no releases)
-    remote = "https://github.com/GoogleCloudPlatform/runtimes-common.git",
-)
-
-load(
-    "@distroless//package_manager:package_manager.bzl",
-    "package_manager_repositories",
-    "dpkg_src",
-    "dpkg",
-)
-
-package_manager_repositories()
-
-dpkg_src(
-    name = "debian_jessie",
-    arch = "amd64",
-    distro = "jessie",
-    url = "http://deb.debian.org",
-)
-
-dpkg_src(
-    name = "debian_jessie_backports",
-    arch = "amd64",
-    distro = "jessie-backports",
-    url = "http://deb.debian.org",
-)
-
-# For the glibc base image.
-dpkg(
-    name = "libc6",
-    source = "@debian_jessie//file:Packages.json",
-)
-
-dpkg(
-    name = "ca-certificates",
-    source = "@debian_jessie//file:Packages.json",
-)
-
-dpkg(
-    name = "openssl",
-    source = "@debian_jessie//file:Packages.json",
-)
-
-dpkg(
-    name = "libssl1.0.0",
-    source = "@debian_jessie//file:Packages.json",
 )
 
 ##
